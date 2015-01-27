@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>SYNCED MAP</title>
+	<style>
+		html, body {
+			height: 100%;
+			margin: 0px;	padding: 0px
+		}
+		#map-canvas {
+			height: 100%;	width : 100%;
+			margin: 0px;	padding: 0px
+		}
+	</style>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+	<script src="http://cdn.mlkcca.com/v0.2.8/milkcocoa.js"></script>
+	<script>
+		var milkcocoa = new MilkCocoa("https://io-hi5ewhcw1.mlkcca.com");
+		var chatDataStore = milkcocoa.dataStore("streetview");
+		var firstcenter = new google.maps.LatLng(34.669425, 135.50133);
+
+		function initialize() {
+			var mapOptions = {
+				zoom: 18,
+				center: firstcenter
+			};
+			map  = new google.maps.Map(document.getElementById('map-canvas'),mapOptions);
+			// ドラッグできるマーカーを表示
+			var l_marker = new google.maps.Marker({
+				position: firstcenter,
+				icon: "http://alfe.xyz/deform/now.png",
+				map: map,
+				draggable: true
+			});
+			// sync_streetview by milkcocoa 
+			chatDataStore.on("push",function(data){
+				l_marker.setPosition(
+					new google.maps.LatLng(data.value.message.k,data.value.message.D)
+				);
+			});
+		}
+		google.maps.event.addDomListener(window, 'load', initialize);
+	</script>
+</head>
+<body>
+	<div id="map-canvas"></div>
+</body>
+</html>
