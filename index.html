@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Street View</title>
+	<style>
+		html, body{
+			height: 100%;
+			margin: 0px;
+			padding: 0px;
+		}
+		#pano{
+			width: 100%;
+			height: 960px;
+		}
+	</style>
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+	<script src="http://cdn.mlkcca.com/v0.2.8/milkcocoa.js"></script>
+	<script>
+		function initialize() {
+			var milkcocoa = new MilkCocoa("https://io-hi5ewhcw1.mlkcca.com");
+			var chatDataStore = milkcocoa.dataStore("streetview");
+			
+			//ストリートビュー作る
+			var panoramaOptions = {
+				position: new google.maps.LatLng(34.669425, 135.50133),
+				pov: { heading: 200, pitch: 0 }
+			};
+			var panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), panoramaOptions);
+
+			//ストリートビューで移動する
+			google.maps.event.addListener(panorama, 'position_changed', function(){
+				positionCell = panorama.getPosition();
+				//milkcocoaに位置情報をpush
+				chatDataStore.push({message : positionCell},function(data){
+					console.log(positionCell);
+		 		});
+			});
+		}
+		google.maps.event.addDomListener(window, 'load', initialize);
+	</script>
+</head>
+<body>
+	<div id="pano"></div>
+</body>
+</html>
